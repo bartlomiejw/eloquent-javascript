@@ -178,38 +178,66 @@ function removeFromSet(set, values) {
     return set;
 }
 
-let mailArchive = [
-    "Drogi siostrzeńcu, /n" +
-    "Twoja matka powiedziała mi, że zacząłeś wykonywać akrobacje ze spadochronem. Czy to prawda? Uważaj na siebie, młody człowieku! Pamiętasz, co się przytrafiło mojemu mężowi? A to było tylko drugie piętro!  /n " +
-    "A tak w ogóle, u mnie sporo się dzieje. Cały tydzień próbowałam zwrócić na siebie uwagę Pana Kowalskiego, tego miłego jegomościa, który wprowadził się do mieszkania obok, ale wydaje mi się, że on nie lubi kotów. A może ma na nie alergię? Następnym razem, gdy się z nim spotkam położę mu na ramieniu Grubego Igora, ciekawe co zrobi.  /n " +
-    "A jeśli chodzi o ten przekręt, o którym pisałam wcześniej, to wszystko idzie, jak po maśle. Otrzymałam już pięć „zapłat” i tylko jedną skargę. Ale zaczyna mnie dręczyć sumienie. Pewnie masz rację, że to może być nielegalne.  /n " +
-    "Całuję, Ciocia Emilia  /n " +
-    "odeszli 04.27.2006: Black Leclère  /n " +
-    "urodzeni 04.05.2006 (matka Lady Penelope): Red Lion, Doctor Hobbles 3, Little Iroquois ",
+function extractDate(paragraph) {
+  let colon = paragraph.indexOf(":");
+  let openBracket = paragraph.indexOf("(");
+  let closeBracket = paragraph.indexOf(")");
 
-    "Drogi siostrzeńcu, /n " +
-    "Twoja matka powiedziała mi, że zacząłeś wykonywać akrobacje ze spadochronem. Czy to prawda? Uważaj na siebie, młody człowieku! Pamiętasz, co się przytrafiło mojemu mężowi? A to było tylko drugie piętro!  /n " +
-    "A tak w ogóle, u mnie sporo się dzieje. Cały tydzień próbowałam zwrócić na siebie uwagę Pana Kowalskiego, tego miłego jegomościa, który wprowadził się do mieszkania obok, ale wydaje mi się, że on nie lubi kotów. A może ma na nie alergię? Następnym razem, gdy się z nim spotkam położę mu na ramieniu Grubego Igora, ciekawe co zrobi.  /n " +
-    "A jeśli chodzi o ten przekręt, o którym pisałam wcześniej, to wszystko idzie, jak po maśle. Otrzymałam już pięć „zapłat” i tylko jedną skargę. Ale zaczyna mnie dręczyć sumienie. Pewnie masz rację, że to może być nielegalne.  /n " +
-    "Całuję, Ciocia Emilia  /n " +
-    "odeszli 04.27.2006: Ferrari /n " +
-    "urodzeni 04.05.2006 (matka Lady Penelope): Testarosa, Ruben Diaz 3, Marko Claudio " ,
-];
-
-var livingCats = { "Spot": true };
-
-for (let mail = 0; mail < mailArchive.length; mail++) {
-  let paragraphs = mailArchive[mail].split("/n");
-  for (let paragraph = 0; paragraph < paragraphs.length; paragraph++) {
-    if (startsWith(paragraphs[paragraph], " urodzeni")) {
-      addToSet(livingCats, catNames(paragraphs[paragraph]));
-    } else if (startsWith(paragraphs[paragraph], " odeszli")) {
-        removeFromSet(livingCats, catNames(paragraphs[paragraph]));
-    }
+  if (closeBracket > 0){
+       var date = paragraph.slice(colon - 32, openBracket - 1);
   }
+  else {
+      var date = paragraph.slice(colon - 10, colon);
+  }
+  let fullDate = date.split('.');
+  let dataObj = new Date(fullDate[2], fullDate[1] - 1, fullDate[0]);
+
+  console.log(fullDate);
+  console.log(dataObj);
 }
 
-console.log(livingCats);
+function findLivingCats(data) {
+    let livingCats = { Spot: true };
+
+    for (let mail = 0; mail < data.length; mail++) {
+      let paragraphs = data[mail].split("/n");
+      for (let paragraph = 0; paragraph < paragraphs.length; paragraph++) {
+        if (startsWith(paragraphs[paragraph], " urodzeni")) {
+          extractDate(paragraphs[paragraph]);
+          addToSet(livingCats, catNames(paragraphs[paragraph]));
+        } else if (startsWith(paragraphs[paragraph], " odeszli")) {
+          extractDate(paragraphs[paragraph]);
+          removeFromSet(livingCats, catNames(paragraphs[paragraph]));
+        }
+      }
+    }
+
+    return livingCats;
+}
+
+let mailArchive = [
+  "Drogi siostrzeńcu, /n" +
+    "Twoja matka powiedziała mi, że zacząłeś wykonywać akrobacje ze spadochronem. Czy to prawda? Uważaj na siebie, młody człowieku! Pamiętasz, co się przytrafiło mojemu mężowi? A to było tylko drugie piętro!  /n " +
+    "A tak w ogóle, u mnie sporo się dzieje. Cały tydzień próbowałam zwrócić na siebie uwagę Pana Kowalskiego, tego miłego jegomościa, który wprowadził się do mieszkania obok, ale wydaje mi się, że on nie lubi kotów. A może ma na nie alergię? Następnym razem, gdy się z nim spotkam położę mu na ramieniu Grubego Igora, ciekawe co zrobi.  /n " +
+    "A jeśli chodzi o ten przekręt, o którym pisałam wcześniej, to wszystko idzie, jak po maśle. Otrzymałam już pięć „zapłat” i tylko jedną skargę. Ale zaczyna mnie dręczyć sumienie. Pewnie masz rację, że to może być nielegalne.  /n " +
+    "Całuję, Ciocia Emilia  /n " +
+    "odeszli 04.04.2021: Black Leclère  /n " +
+    "urodzeni 04.05.2021 (matka Lady Penelope): Red Lion, Doctor Hobbles 3, Little Iroquois ",
+
+  "Drogi siostrzeńcu, /n " +
+    "Twoja matka powiedziała mi, że zacząłeś wykonywać akrobacje ze spadochronem. Czy to prawda? Uważaj na siebie, młody człowieku! Pamiętasz, co się przytrafiło mojemu mężowi? A to było tylko drugie piętro!  /n " +
+    "A tak w ogóle, u mnie sporo się dzieje. Cały tydzień próbowałam zwrócić na siebie uwagę Pana Kowalskiego, tego miłego jegomościa, który wprowadził się do mieszkania obok, ale wydaje mi się, że on nie lubi kotów. A może ma na nie alergię? Następnym razem, gdy się z nim spotkam położę mu na ramieniu Grubego Igora, ciekawe co zrobi.  /n " +
+    "A jeśli chodzi o ten przekręt, o którym pisałam wcześniej, to wszystko idzie, jak po maśle. Otrzymałam już pięć „zapłat” i tylko jedną skargę. Ale zaczyna mnie dręczyć sumienie. Pewnie masz rację, że to może być nielegalne.  /n " +
+    "Całuję, Ciocia Emilia  /n " +
+    "odeszli 04.03.2021: Ferrari /n " +
+    "urodzeni 04.05.2021 (matka Lady Penelope): Testarosa, Ruben Diaz 3, Marko Claudio ",
+];
+
+
+console.log(findLivingCats(mailArchive));
 
 // for (let cat in livingCats)
 // console.log(cat);
+
+var now = new Date(1995, 11, 17);
+console.log(now);
