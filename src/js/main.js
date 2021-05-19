@@ -95,17 +95,37 @@ function absolute($number) {
 //     console.log(mailArchive[current])
 // }
 
-// ex. 4.2
+// ex. 4.2 i 4.10
 
-// function range(number) {
-//     let arr = [];
-//     for (let current = 0; current <= number; current++) {
-//       arr[current] = current;
-//     }
-//     return arr.join(" < ");
-// }
+function range(number, sec) {
+    if (arguments.length >= 2) {
+      let arr = [];
+      for (let current = number; current <= sec; current++) {
+        arr.push(current);
+      }
+      return arr;
+    } else {
+      let arr = [];
+      for (let current = 0; current <= number; current++) {
+        arr.push(current);
+      }
+      return arr;
+    }
+}
 
-// console.log(range(12));
+console.log(range(3, 5));
+
+// ex 4.11
+
+function sum(arr) {
+  var suma = 0;
+  for (let i = 0; i < arr.length; i++) {
+    suma += arr[i];
+  }
+  return suma;
+}
+
+console.log(sum(range(3, 5)));
 
 // ex 4.3
 
@@ -178,6 +198,14 @@ function removeFromSet(set, values) {
     return set;
 }
 
+function formatDate(number) {
+  if (!(number >= 10)) {
+    return "0" + number;
+  } else {
+    return number;
+  }
+}
+
 function extractDate(paragraph) {
   let colon = paragraph.indexOf(":");
   let openBracket = paragraph.indexOf("(");
@@ -190,24 +218,60 @@ function extractDate(paragraph) {
       var date = paragraph.slice(colon - 10, colon);
   }
   let fullDate = date.split('.');
-  let dataObj = new Date(fullDate[2], fullDate[1] - 1, fullDate[0]);
+  let dateObj = new Date(fullDate[2], fullDate[1] - 1, fullDate[0]);
+  var month = formatDate(dateObj.getUTCMonth() + 1);
+  var day = formatDate(dateObj.getUTCDate() + 1);
+  let year = dateObj.getUTCFullYear();
 
-  console.log(fullDate);
-  console.log(dataObj);
+  let newDate = day + "." + month + "." + year;
+
+  return newDate;
+  // console.log(fullDate);
+  // console.log(dataObj);
+}
+
+function catRecord(name, birthdate, deathdate, mother) {
+  return { name: name, birth: birthdate, death: deathdate, mother: mother };
+}
+
+function addCats(set, names, birthdate, mother) {
+  for (var i = 0; i < names.length; i++)
+    set[names[i]] = catRecord(names[i], birthdate, "nieznany", mother);
+}
+function deadCats(set, names, deathdate) {
+  for (var i = 0; i < names.length; i++) set[names[i]] = catRecord(names[i], "nieznany", deathdate, "nieznany");
+}
+
+function extractMother(paragraph) {
+  var start = paragraph.indexOf("(matka ") + "(matka ".length;
+  var end = paragraph.indexOf(")");
+  return paragraph.slice(start, end);
+}
+
+// ex 4.7
+
+function between(paragraph, start, end) {
+  var startAt = paragraph.indexOf(start) + start.length;
+  var endAt = paragraph.indexOf(end, startAt);
+  return paragraph.slice(startAt, endAt);
 }
 
 function findLivingCats(data) {
-    let livingCats = { Spot: true };
-
+    let livingCats = {
+      Spot: catRecord("Spot", "02.05.2957", "nieznany", "nieznany"),
+    };
     for (let mail = 0; mail < data.length; mail++) {
       let paragraphs = data[mail].split("/n");
       for (let paragraph = 0; paragraph < paragraphs.length; paragraph++) {
         if (startsWith(paragraphs[paragraph], " urodzeni")) {
-          extractDate(paragraphs[paragraph]);
-          addToSet(livingCats, catNames(paragraphs[paragraph]));
+          addCats(
+            livingCats,
+            catNames(paragraphs[paragraph]),
+            extractDate(paragraphs[paragraph]),
+            between(paragraphs[paragraph], "(matka ", ")")
+          );
         } else if (startsWith(paragraphs[paragraph], " odeszli")) {
-          extractDate(paragraphs[paragraph]);
-          removeFromSet(livingCats, catNames(paragraphs[paragraph]));
+          deadCats(livingCats, catNames(paragraphs[paragraph]), extractDate(paragraphs[paragraph]));
         }
       }
     }
@@ -221,23 +285,63 @@ let mailArchive = [
     "A tak w ogóle, u mnie sporo się dzieje. Cały tydzień próbowałam zwrócić na siebie uwagę Pana Kowalskiego, tego miłego jegomościa, który wprowadził się do mieszkania obok, ale wydaje mi się, że on nie lubi kotów. A może ma na nie alergię? Następnym razem, gdy się z nim spotkam położę mu na ramieniu Grubego Igora, ciekawe co zrobi.  /n " +
     "A jeśli chodzi o ten przekręt, o którym pisałam wcześniej, to wszystko idzie, jak po maśle. Otrzymałam już pięć „zapłat” i tylko jedną skargę. Ale zaczyna mnie dręczyć sumienie. Pewnie masz rację, że to może być nielegalne.  /n " +
     "Całuję, Ciocia Emilia  /n " +
-    "odeszli 04.04.2021: Black Leclère  /n " +
-    "urodzeni 04.05.2021 (matka Lady Penelope): Red Lion, Doctor Hobbles 3, Little Iroquois ",
+    "odeszli 14.04.2021: Black Leclère  /n " +
+    "urodzeni 04.08.1965 (matka Lady Penelope): Red Lion, Doctor Hobbles 3, Little Iroquois ",
 
   "Drogi siostrzeńcu, /n " +
     "Twoja matka powiedziała mi, że zacząłeś wykonywać akrobacje ze spadochronem. Czy to prawda? Uważaj na siebie, młody człowieku! Pamiętasz, co się przytrafiło mojemu mężowi? A to było tylko drugie piętro!  /n " +
     "A tak w ogóle, u mnie sporo się dzieje. Cały tydzień próbowałam zwrócić na siebie uwagę Pana Kowalskiego, tego miłego jegomościa, który wprowadził się do mieszkania obok, ale wydaje mi się, że on nie lubi kotów. A może ma na nie alergię? Następnym razem, gdy się z nim spotkam położę mu na ramieniu Grubego Igora, ciekawe co zrobi.  /n " +
     "A jeśli chodzi o ten przekręt, o którym pisałam wcześniej, to wszystko idzie, jak po maśle. Otrzymałam już pięć „zapłat” i tylko jedną skargę. Ale zaczyna mnie dręczyć sumienie. Pewnie masz rację, że to może być nielegalne.  /n " +
     "Całuję, Ciocia Emilia  /n " +
-    "odeszli 04.03.2021: Ferrari /n " +
-    "urodzeni 04.05.2021 (matka Lady Penelope): Testarosa, Ruben Diaz 3, Marko Claudio ",
+    "odeszli 14.03.2021: Ferrari /n " +
+    "urodzeni 24.05.2021 (matka Lady Penelope): Testarosa, Ruben Diaz 3, Marko Claudio ",
 ];
 
-
 console.log(findLivingCats(mailArchive));
+let catData = findLivingCats(mailArchive);
 
 // for (let cat in livingCats)
 // console.log(cat);
 
-var now = new Date(1995, 11, 17);
-console.log(now);
+// var now = new Date(1995, 11, 17);
+// console.log(now);
+
+function catInfo(data, name) {
+  if (!(name in data))
+    return "Kot o imieniu " + name + " nie jest znany światu.";
+
+  var cat = data[name];
+  var message = name + ", urodzony " + cat.birth + " z matki  " + cat.mother;
+  if ("death" in cat) message += ", zdechł dnia " + cat.death;
+  return message + ".";
+}
+
+console.log(catInfo(catData, "Ferrari "));
+
+// 4.9
+
+function oldestCat(data) {
+  let oldest = null;
+  for(let name in data){
+      if (!(data[name].birth == "nieznany")) {
+        let cat = data[name];
+        let arrDate = cat.birth.split(".");
+        cat.birth = new Date(arrDate[2], cat.birth[1], cat.birth[0]);
+        // console.log(cat);
+        if (oldest == null || oldest.birth > cat.birth){
+          oldest = cat;
+        }
+      }
+    }
+if (oldest == null) return null;
+else return oldest.name;
+}
+
+console.log(oldestCat(catData));
+
+function argumentCount() {
+
+console.log(arguments.length);
+}
+
+argumentCount("test", "test2", "nic");
