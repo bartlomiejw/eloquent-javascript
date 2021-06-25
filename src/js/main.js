@@ -2,7 +2,6 @@
 
 // place your code below
 
-
 console.log(`Hello world!`);
 
 // let licznik = 0;
@@ -35,11 +34,11 @@ console.log(`Hello world!`);
 // ex 3.1
 
 function absolute($number) {
-    if ($number >= 0) {
-        console.log($number);
-    } else {
-        console.log(-$number);
-    }
+  if ($number >= 0) {
+    console.log($number);
+  } else {
+    console.log(-$number);
+  }
 }
 
 // absolute(-103);
@@ -86,9 +85,6 @@ function absolute($number) {
 
 // console.log(names.nicks);
 
-
-
-
 // console.log(mailArchive);
 
 // for (let current = 0; current in mailArchive; current++) {
@@ -98,19 +94,19 @@ function absolute($number) {
 // ex. 4.2 i 4.10
 
 function range(number, sec) {
-    if (arguments.length >= 2) {
-      let arr = [];
-      for (let current = number; current <= sec; current++) {
-        arr.push(current);
-      }
-      return arr;
-    } else {
-      let arr = [];
-      for (let current = 0; current <= number; current++) {
-        arr.push(current);
-      }
-      return arr;
+  if (arguments.length >= 2) {
+    let arr = [];
+    for (let current = number; current <= sec; current++) {
+      arr.push(current);
     }
+    return arr;
+  } else {
+    let arr = [];
+    for (let current = 0; current <= number; current++) {
+      arr.push(current);
+    }
+    return arr;
+  }
 }
 
 console.log(range(3, 5));
@@ -130,7 +126,6 @@ console.log(sum(range(3, 5)));
 // ex 4.3
 
 // let string = ["Polska","to","kraj"];
-
 
 // console.log(string.join(" ").split(" s"));
 
@@ -174,28 +169,28 @@ function startsWith(string1, string2) {
 // ex 4.5
 
 function catNames(paragraph) {
-    let splitPlace = paragraph.indexOf(':');
-    let catNamesString = paragraph.slice(splitPlace + 2);
-    let catNames = catNamesString.split(',');
+  let splitPlace = paragraph.indexOf(":");
+  let catNamesString = paragraph.slice(splitPlace + 2);
+  let catNames = catNamesString.split(",");
 
-    return catNames;
+  return catNames;
 }
 //   catNames("urodzeni 20/09/2004 (matka Yellow Bess): Doctor Hobbles 2, Noog");
 
 // MAILE KOTY
 
 function addToSet(set, values) {
-    for (let i = 0; i < values.length; i++) {
-        set[values[i]] = true;
-    }
-    return set;
+  for (let i = 0; i < values.length; i++) {
+    set[values[i]] = true;
+  }
+  return set;
 }
 
 function removeFromSet(set, values) {
-    for (let i = 0; i < values.length; i++) {
-        delete set[values[i]];
-    }
-    return set;
+  for (let i = 0; i < values.length; i++) {
+    delete set[values[i]];
+  }
+  return set;
 }
 
 function formatDate(number) {
@@ -211,13 +206,12 @@ function extractDate(paragraph) {
   let openBracket = paragraph.indexOf("(");
   let closeBracket = paragraph.indexOf(")");
 
-  if (closeBracket > 0){
-       var date = paragraph.slice(colon - 32, openBracket - 1);
+  if (closeBracket > 0) {
+    var date = paragraph.slice(colon - 32, openBracket - 1);
+  } else {
+    var date = paragraph.slice(colon - 10, colon);
   }
-  else {
-      var date = paragraph.slice(colon - 10, colon);
-  }
-  let fullDate = date.split('.');
+  let fullDate = date.split(".");
   let dateObj = new Date(fullDate[2], fullDate[1] - 1, fullDate[0]);
   var month = formatDate(dateObj.getUTCMonth() + 1);
   var day = formatDate(dateObj.getUTCDate() + 1);
@@ -239,7 +233,8 @@ function addCats(set, names, birthdate, mother) {
     set[names[i]] = catRecord(names[i], birthdate, "nieznany", mother);
 }
 function deadCats(set, names, deathdate) {
-  for (var i = 0; i < names.length; i++) set[names[i]] = catRecord(names[i], "nieznany", deathdate, "nieznany");
+  for (var i = 0; i < names.length; i++)
+    set[names[i]] = catRecord(names[i], "nieznany", deathdate, "nieznany");
 }
 
 function extractMother(paragraph) {
@@ -257,26 +252,30 @@ function between(paragraph, start, end) {
 }
 
 function findLivingCats(data) {
-    let livingCats = {
-      Spot: catRecord("Spot", "02.05.2957", "nieznany", "nieznany"),
-    };
-    for (let mail = 0; mail < data.length; mail++) {
-      let paragraphs = data[mail].split("/n");
-      for (let paragraph = 0; paragraph < paragraphs.length; paragraph++) {
-        if (startsWith(paragraphs[paragraph], " urodzeni")) {
-          addCats(
-            livingCats,
-            catNames(paragraphs[paragraph]),
-            extractDate(paragraphs[paragraph]),
-            between(paragraphs[paragraph], "(matka ", ")")
-          );
-        } else if (startsWith(paragraphs[paragraph], " odeszli")) {
-          deadCats(livingCats, catNames(paragraphs[paragraph]), extractDate(paragraphs[paragraph]));
-        }
+  let livingCats = {
+    Spot: catRecord("Spot", "02.05.2957", "nieznany", "nieznany"),
+  };
+  for (let mail = 0; mail < data.length; mail++) {
+    let paragraphs = data[mail].split("/n");
+    for (let paragraph = 0; paragraph < paragraphs.length; paragraph++) {
+      if (startsWith(paragraphs[paragraph], " urodzeni")) {
+        addCats(
+          livingCats,
+          catNames(paragraphs[paragraph]),
+          extractDate(paragraphs[paragraph]),
+          between(paragraphs[paragraph], "(matka ", ")")
+        );
+      } else if (startsWith(paragraphs[paragraph], " odeszli")) {
+        deadCats(
+          livingCats,
+          catNames(paragraphs[paragraph]),
+          extractDate(paragraphs[paragraph])
+        );
       }
     }
+  }
 
-    return livingCats;
+  return livingCats;
 }
 
 let mailArchive = [
@@ -322,26 +321,25 @@ console.log(catInfo(catData, "Ferrari "));
 
 function oldestCat(data) {
   let oldest = null;
-  for(let name in data){
-      if (!(data[name].birth == "nieznany")) {
-        let cat = data[name];
-        let arrDate = cat.birth.split(".");
-        cat.birth = new Date(arrDate[2], cat.birth[1], cat.birth[0]);
-        // console.log(cat);
-        if (oldest == null || oldest.birth > cat.birth){
-          oldest = cat;
-        }
+  for (let name in data) {
+    if (!(data[name].birth == "nieznany")) {
+      let cat = data[name];
+      let arrDate = cat.birth.split(".");
+      cat.birth = new Date(arrDate[2], cat.birth[1], cat.birth[0]);
+      // console.log(cat);
+      if (oldest == null || oldest.birth > cat.birth) {
+        oldest = cat;
       }
     }
-if (oldest == null) return null;
-else return oldest.name;
+  }
+  if (oldest == null) return null;
+  else return oldest.name;
 }
 
 console.log(oldestCat(catData));
 
 function argumentCount() {
-
-console.log(arguments.length);
+  console.log(arguments.length);
 }
 
 argumentCount("test", "test2", "nic");
@@ -350,7 +348,7 @@ function forEach(array, action) {
   for (var i = 0; i < array.length; i++) action(array[i]);
 }
 
-console.log('<----- NOWE ----->');
+console.log("<----- NOWE ----->");
 
 function reduce(combine, base, array) {
   forEach(array, function (element) {
@@ -367,8 +365,6 @@ function sum(numbers) {
   console.log(reduce(add, 0, numbers));
 }
 
-
-
 sum([4, 4]);
 
 // 6.1
@@ -379,12 +375,10 @@ function countZeroes(array) {
   function counter(total, element) {
     return total + (element === 0 ? 1 : 0);
   }
- console.log(reduce(counter, 0, array));
+  console.log(reduce(counter, 0, array));
 }
 
 countZeroes([4, 0, 20, 12, 10, 0, 0]);
-
-
 
 function count(test, array) {
   return reduce(
@@ -405,7 +399,6 @@ function equals(x) {
 function countZeroes(array) {
   return count(equals(0), array);
 }
-
 
 // ex 6.2
 
@@ -460,9 +453,9 @@ W trakcie powstawania każdy język programowania otrzymuje składnię i semanty
 
 Tzu-ssu poproszono o napisanie programu w języku o nazwie Java, w którym funkcje są bardzo prymitywne. Każdego ranka zasiadając przed komputerem Tzu-ssu od razu zaczynał narzekać. Całymi dniami przeklinał i obwiniał język za wszystkie swoje niepowodzenia. Fu-Tzu przez pewien czas go słuchał, aż w końcu rzucił: „Każdy język ma swoje właściwości. Postępuj zgodnie z jego zasadami, zamiast próbować pisać tak, jakbyś używał innego języka”.`;
 
-let paragraphs = recluseFile.split('\n\n');
+let paragraphs = recluseFile.split("\n\n");
 
-console.log('<--------- ZADANIE 6,2 ZOBACZ --------->');
+console.log("<--------- ZADANIE 6,2 ZOBACZ --------->");
 console.log(paragraphs);
 
 function processParagraph(paragraph) {
@@ -477,7 +470,7 @@ function processParagraph(paragraph) {
   );
 
   function contentSave(content, type) {
-    return { content: content, type: type, };
+    return { content: content, type: type };
   }
 
   var header = 0;
@@ -493,7 +486,50 @@ function processParagraph(paragraph) {
 
 processParagraph(paragraphs[6]);
 
-forEach(paragraph, function (element) {
-  var index = 1;
-  console.log(element.slice("%"));
-});
+// ex. 6.3
+
+function map(func, array) {
+  var result = [];
+  forEach(array, function (element) {
+    result.push(func(element));
+  });
+  return result;
+}
+
+function splitParagraph(text) {
+  function indexOrEnd(character) {
+    var index = text.indexOf(character);
+    return index == -1 ? text.length : index;
+  }
+
+  function takeNormal() {
+    var end = reduce(Math.min, text.length, map(indexOrEnd, ["*", "{"]));
+    var part = text.slice(0, end);
+    text = text.slice(end);
+
+    return part;
+  }
+
+  function takeUpTo(character) {
+    var end = text.indexOf(character, 1);
+    if (end == -1) throw new Error("Brak zamykającego '" + character + "'");
+    var part = text.slice(1, end);
+    text = text.slice(end + 1);
+    return part;
+  }
+
+  var fragments = [];
+
+  while (text != "") {
+    if (text.charAt(0) == "*")
+      fragments.push({ type: "emphasised", content: takeUpTo("*") });
+    else if (text.charAt(0) == "{")
+      fragments.push({ type: "footnote", content: takeUpTo("}") });
+    else fragments.push({ type: "normal", content: takeNormal() });
+  }
+  return fragments;
+}
+
+// var par = map(processParagraph, recluseFile.split("\n\n"));
+
+console.log(splitParagraph(paragraphs[17]));
