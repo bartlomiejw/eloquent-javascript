@@ -345,3 +345,155 @@ console.log(arguments.length);
 }
 
 argumentCount("test", "test2", "nic");
+
+function forEach(array, action) {
+  for (var i = 0; i < array.length; i++) action(array[i]);
+}
+
+console.log('<----- NOWE ----->');
+
+function reduce(combine, base, array) {
+  forEach(array, function (element) {
+    base = combine(base, element);
+  });
+  return base;
+}
+
+function add(a, b) {
+  return a + b;
+}
+
+function sum(numbers) {
+  console.log(reduce(add, 0, numbers));
+}
+
+
+
+sum([4, 4]);
+
+// 6.1
+
+// 4,20,12,10,22,34, 0, 130, 100
+
+function countZeroes(array) {
+  function counter(total, element) {
+    return total + (element === 0 ? 1 : 0);
+  }
+ console.log(reduce(counter, 0, array));
+}
+
+countZeroes([4, 0, 20, 12, 10, 0, 0]);
+
+
+
+function count(test, array) {
+  return reduce(
+    function (total, element) {
+      return total + (test(element) ? 1 : 0);
+    },
+    0,
+    array
+  );
+}
+
+function equals(x) {
+  return function (element) {
+    return x === element;
+  };
+}
+
+function countZeroes(array) {
+  return count(equals(0), array);
+}
+
+
+// ex 6.2
+
+var recluseFile = `% Księga programowania
+
+%% Dwa aspekty
+
+Pod powłoką maszyny tętni życie programu. Bez żadnego wysiłku program rozszerza się i kurczy. Elektrony harmonicznie rozpraszają się i grupują. Formy powstające na ekranie monitora są niczym zmarszczki na powierzchni wody. Esencja pozostaje niezauważalna poniżej.
+
+Konstruktorzy maszyny umieścili w niej procesor i pamięć. To z nich powstały dwa aspekty programu.
+
+Aspekt procesora jest substancją aktywną. Nazywa się Kontrolą. Aspekt pamięci jest substancją pasywną. Nazywa się
+Danymi.
+
+Dane, mimo że składają się jedynie z bitów, mogą przyjmować niezwykle skomplikowane formy. Kontrola składa się tylko z prostych instrukcji, a mimo to może wykonywać trudne zadania. Małe i banalne byty dają początek rzeczom wielkim i skomplikowanym.
+
+Źródłem programu są Dane. Daje on początek istnieniu Kontroli. Kontrola może tworzyć nowe Dane. Jedne rodzą się z innych, inne są bezużyteczne bez poprzednich. Jest to harmonijny cykl Danych i Kontroli.
+
+Same w sobie Dane i Kontrola nie mają struktury. Z tej surowej substancji dawni programiści wyrzeźbili swoje programy. Z czasem z bezkształtnej masy wyłoniły się typy danych i chaotyczna Kontrola została ograniczona do roli struktur sterujących i funkcji.
+
+%% Aforyzmy
+
+Gdy uczeń zapytał Fu-Tzu o naturę cyklu Danych i Kontroli, Fu-Tzu odparł: „Pomyśl o kompilatorze, który sam siebie kompiluje”.
+
+Uczeń zapytał: „Dawni programiści używali tylko prostych maszyn i nie znali języków programowania, a mimo to tworzyli piękne programy. Dlaczego my używamy skomplikowanych maszyn i języków programowania?”. Fu-Tzu odparł: „Dawni budowniczowie używali tylko patyków i gliny, a mimo to budowali piękne chaty”.
+
+Pustelnik spędził dziesięć lat na pisaniu programu. Gdy skończył, z dumą ogłosił: „Mój program potrafi obliczyć ruch gwiazd na komputerze o architekturze 286 z systemem MS DOS”. „Dziś nikt już nie ma, ani nie używa komputerów o architekturze 286 z systemem MS DOS” odparł Fu-Tzu.
+
+Fu-Tzu napisał niewielki program pełen globalnych stanów i wątpliwych skrótów. Uczeń czytając ten kod spytał: „Ostrzegałeś nas przed tego typu technikami, a sam je stosujesz. Dlaczego”? Fu-Tzu odparł: „Nie ma sensu biec po węże strażackie, kiedy dom się nie pali” {nie ma to być zachętą do stosowania złych praktyk programistycznych, a jedynie ostrzeżeniem przed fanatycznym trzymaniem się podstawowych zasad}.
+
+%% Mądrość
+
+Uczeń skarżył się na wyniki obliczeń cyfrowych. „Gdy obliczę pierwiastek z dwóch, a potem podniosę to do potęgi, wynik jest niedokładny”! Fu-Tzu, który go przypadkiem usłyszał, roześmiał się. „Oto kawałek papieru. Napisz na nim dokładną wartość pierwiastka z dwóch”.
+
+Fu-Tzu rzekł: „Aby przeciąć pestkę, trzeba użyć dużej siły. Aby programem rozwiązać sedno problemu, trzeba napisać dużo kodu”.
+
+Tzu-li i Tzu-ssu chwalili się rozmiarem swoich najnowszych programów. „Dwieście tysięcy wierszy kodu”, powiedział Tzu-li, „nie licząc komentarzy”! Tzu-ssu odrzekł: „Phi, mój ma prawie *milion* wierszy kodu”. Fu-Tzu słysząc to, odparł: „Mój najlepszy program zawiera pięćset wierszy kodu”. Tzu-li i Tzu-ssu słysząc te słowa doznali olśnienia.
+
+Uczeń siedział w bezruchu przed swoim komputerem przez kilka godzin i tylko groźnie spoglądał. Próbował napisać piękne rozwiązanie trudnego problemu, ale nic dobrego nie przychodziło mu do głowy. Fu-Tzu trzasnął go w tył głowy i krzyknął: „*Napiszże coś!*”. Student zaczął pisać szpetne rozwiązanie. Gdy skończył, nagle pojął, jak napisać piękne rozwiązanie.
+
+%% Postęp
+
+Początkujący programista pisze programy tak, jak mrówka buduje swój kopiec, kawałek po kawałku bez zważania na ogólną strukturę. Jego programy są, jak luźne ziarnka piasku. Przez jakiś czas utrzymają się w całości, ale gdy za bardzo urosną, rozlecą się{odniesienie do wewnętrznej niespójności i duplikacji struktury w źle zorganizowanym kodzie.}.
+
+Gdy zda sobie sprawę z problemu, programista zacznie o wiele więcej czasu poświęcać na projektowanie struktury. Jego programy będą ściśle zbudowane, jak skalne rzeźby. Będą solidne, ale gdy będzie trzeba w nich coś zmienić, konieczne będzie zastosowanie brutalnych metod{Odniesienie do faktu, że struktura może ograniczać ewolucję programu.}.
+
+Mistrz programowania wie, kiedy zastosować strukturę, a kiedy pozostawić proste rozwiązania. Jego programy są jak glina, zwarte ale i plastyczne.
+
+%% Język
+
+W trakcie powstawania każdy język programowania otrzymuje składnię i semantykę. Składnia opisuje formę programu, semantyka zaś opisuje jego funkcję. Gdy składnia jest piękna, a semantyka klarowna, program będzie dostojny, jak pień potężnego drzewa. Gdy składnia jest niezgrabna, a semantyka niejasna, program jest jak krzak jeżyny.
+
+Tzu-ssu poproszono o napisanie programu w języku o nazwie Java, w którym funkcje są bardzo prymitywne. Każdego ranka zasiadając przed komputerem Tzu-ssu od razu zaczynał narzekać. Całymi dniami przeklinał i obwiniał język za wszystkie swoje niepowodzenia. Fu-Tzu przez pewien czas go słuchał, aż w końcu rzucił: „Każdy język ma swoje właściwości. Postępuj zgodnie z jego zasadami, zamiast próbować pisać tak, jakbyś używał innego języka”.`;
+
+let paragraphs = recluseFile.split('\n\n');
+
+console.log('<--------- ZADANIE 6,2 ZOBACZ --------->');
+console.log(paragraphs);
+
+function processParagraph(paragraph) {
+  console.log(
+    reduce(
+      function (total, element) {
+        return total + (element.startsWith("%") ? 1 : 0);
+      },
+      0,
+      paragraph
+    )
+  );
+
+  function contentSave(content, type) {
+    return { content: content, type: type, };
+  }
+
+  var header = 0;
+  while (paragraph.charAt(0) == "%") {
+    paragraph = paragraph.slice(1);
+    console.log(paragraph);
+    header++;
+    console.log(header);
+  }
+
+  console.log({ type: header == 0 ? "p" : "h" + header, content: paragraph });
+}
+
+processParagraph(paragraphs[6]);
+
+forEach(paragraph, function (element) {
+  var index = 1;
+  console.log(element.slice("%"));
+});
