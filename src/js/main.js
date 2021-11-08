@@ -551,3 +551,7 @@ return fragments;
 }
 
 var test = '';
+
+console.log(splitParagraph(paragraphs[17]));
+
+console.log(splitParagraph(paragraphs[17]));
