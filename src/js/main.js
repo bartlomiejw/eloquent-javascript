@@ -549,3 +549,5 @@ while (text != "") {
 }
 return fragments;
 }
+
+var test = '';
