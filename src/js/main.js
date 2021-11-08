@@ -537,3 +537,15 @@ console.log(splitParagraph(paragraphs[17]));
 console.log(splitParagraph(paragraphs[17]));
 
 console.log(splitParagraph(paragraphs[17]));
+
+var fragments = [];
+
+while (text != "") {
+  if (text.charAt(0) == "*")
+    fragments.push({ type: "emphasised", content: takeUpTo("*") });
+  else if (text.charAt(0) == "{")
+    fragments.push({ type: "footnote", content: takeUpTo("}") });
+  else fragments.push({ type: "normal", content: takeNormal() });
+}
+return fragments;
+}
