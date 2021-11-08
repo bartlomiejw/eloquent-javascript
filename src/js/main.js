@@ -533,3 +533,7 @@ function splitParagraph(text) {
 // var par = map(processParagraph, recluseFile.split("\n\n"));
 
 console.log(splitParagraph(paragraphs[17]));
+
+console.log(splitParagraph(paragraphs[17]));
+
+console.log(splitParagraph(paragraphs[17]));
