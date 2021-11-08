@@ -555,3 +555,11 @@ var test = '';
 console.log(splitParagraph(paragraphs[17]));
 
 console.log(splitParagraph(paragraphs[17]));
+
+function takeUpTo(character) {
+  var end = text.indexOf(character, 1);
+  if (end == -1) throw new Error("Brak zamykającego '" + character + "'");
+  var part = text.slice(1, end);
+  text = text.slice(end + 1);
+  return part;
+}
